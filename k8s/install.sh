@@ -8,7 +8,7 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl
 
 
-kubeadm init 
+kubeadm init  --pod-network-cidr=192.168.0.0/16
 kubectl --kubeconfig /etc/kubernetes/admin.conf apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml
 
 kubectl --kubeconfig /etc/kubernetes/admin.conf taint nodes --all node-role.kubernetes.io/master-
