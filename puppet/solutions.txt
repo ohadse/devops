@@ -1,0 +1,30 @@
+# on the master
+wget "https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb"
+
+sudo dpkg -i puppetlabs-release-pc1-xenial.deb
+sudo apt-get update
+sudo apt-get install puppet-agent
+sudo apt-get install puppetserver
+
+sudo service puppetserver start
+
+sudo puppet module install rtyler-jenkins --version 1.7.0
+sudo vi /etc/puppetlabs/code/environments/production/manifests/nodes.pp
+
+# THIS GOES IN THE FILE
+node default {
+	include jenkins
+}
+
+# ON AGENT
+
+sudo puppet agent -t --server MASTERSERVER.LOCAL
+
+#ON MASTER
+sudo  puppet cert list
+sudo puppet cert sign HOSTNAMEFROMLIST
+
+# ON AGENT
+sudo puppet agent -t --server MASTERSERVER.LOCAL
+
+
