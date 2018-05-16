@@ -1,0 +1,6 @@
+---
+- name: copy ssh keys
+  hosts: machines
+  tasks:
+      - name: copy ssh key
+        copy: src=files/jb_ubuntu.pem dest=.ssh/id_dsa mode=0600

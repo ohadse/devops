@@ -1,0 +1,3 @@
+---
+conf_file: /tmp/conf
+my_message: this is a message from groups

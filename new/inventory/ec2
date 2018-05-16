@@ -1,0 +1,8 @@
+[machines:vars]
+ansible_user=ubuntu 
+ansible_private_key_file=/home/omris/Downloads/jb_ubuntu.pem
+
+[machines]
+ec2 ansible_host=18.196.198.246 
+ec2-2 ansible_host=18.184.193.137 
+
