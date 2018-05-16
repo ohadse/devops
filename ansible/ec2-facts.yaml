@@ -1,0 +1,4 @@
+- name: get ec2 facts
+  ec2_facts:
+
+- debug: var=ansible_ec2_instance_id

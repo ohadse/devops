@@ -1,0 +1,8 @@
+1. install on the second server puppet agent like you did on the first  server
+2. install the package puppetserver
+3. start the service puppetserver
+4. install the modules for jenkins on the master
+5. create a manifest that will include jenkins on the node in /etc/puppetlabs/code/environments/production/manifests
+6. run puppet agent -t --server on the agent to run against your new server
+7. sign the certificate on the master (puppet cert sign HOSTNAME ) - you can see the unsigned certs using puppet cert list --all
+8. run puppet again on the node and see that it worked
