@@ -10,3 +10,10 @@ ansible default -b -m service -a "name=puppet state=restarted"
 ansible default -b -m service -a "name=nginx state=restarted"
 
 ansible-playbook nginx-playbook.yaml
+ansible-doc copy
+ansible-doc service
+
+ansible default -m setup
+ansible default -m setup -a 'filter=ansible_eth*'
+
+ansible-playbook --list-tasks debug.yaml
