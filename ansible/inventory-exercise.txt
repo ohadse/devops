@@ -6,3 +6,7 @@ and add to inventory file
 [web]
 35.157.176.XX ansible_user=centos ansible_ssh_private_key_file=jb_eaas.pem
 
+Create ansible.cfg file with defaults
+
+[defaults]
+inventory=inventory
