@@ -1,0 +1,11 @@
+# We ignore local installations of ELK
+logstash-*
+elasticsearch-*
+kibana-*
+
+# Ignore Emacs temporary files
+*~
+\#*\#
+
+# Ignore Logstash sincedb files
+*sincedb*

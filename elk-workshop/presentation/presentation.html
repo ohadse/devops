@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Hands-on ELK Workshop</title>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+<link rel="stylesheet" href="./reveal.js/css/theme/white.css" id="theme"/>
+<link rel="stylesheet" href=""/>
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Hands-on ELK Workshop</h1>
+<h2></h2>
+</section>
+
+<section>
+<section id="slide-orgheadline1">
+<h2 id="orgheadline1">Agenda for today</h2>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>17:30-18:00</b></td>
+<td class="org-left">Intro </td>
+</tr>
+
+<tr>
+<td class="org-left"><b>18:00-18:30</b></td>
+<td class="org-left">Configuration (Install ELK + repo)</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>18:30-19:10</b></td>
+<td class="org-left">1st pipeline logstash + Elasticsearch</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>19:10-19:20</b></td>
+<td class="org-left">pause</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>19:20-19:50</b></td>
+<td class="org-left">1st pipeline visualization in Kibana</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>19:50-20:00</b></td>
+<td class="org-left">Pause</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>20:00-20:50</b></td>
+<td class="org-left">2nd pipeline logstash + Elasticsearch</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>20:50-21:00</b></td>
+<td class="org-left">Pause</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>21:00-21:40</b></td>
+<td class="org-left">2nd pipeline visualization in Kibana</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline4">
+<h2 id="orgheadline4">What is the <b>ELK</b> platform?</h2>
+<p>
+ELK consist of three open source projects — Elasticsearch, Logstash, and Kibana 
+— designed to take data from any source and search, analyze, and visualize it in real time. 
+The philosophy behind these tools is that getting immediate, actionable insight from data matters.
+</p>
+<ul>
+<li class="fragment appear"><b>Elasticsearch</b> for deep search and data analytics.</li>
+<li class="fragment appear"><b>Logstash</b> for centralized logging management: shipping and forwarding logs, log enrichment, and parsing.</li>
+<li class="fragment appear"><b>Kibana</b> for powerful and beautiful data visualizations.</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline2">
+<h3 id="orgheadline2">What can we use ELK for?</h3>
+<ul>
+<li>Issue debugging</li>
+<li>Performance analysis</li>
+<li>Security analysis</li>
+<li>Predictive analysis</li>
+<li>Internet of things (IoT) and logging</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline3">
+<h3 id="orgheadline3">Typical problems with your logs</h3>
+<ul>
+<li>Non-consistent log format</li>
+<li>Decentralized logs</li>
+<li>Expert knowledge requirement</li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline7">
+<h2 id="orgheadline7">Setup</h2>
+<ul>
+<li>Clone <a href="https://github.com/omrisiri/devops">https://github.com/omrisiri/devops/</a></li>
+<li>run setup.sh to download andextract in the elk-workshop directory in the repository:
+<ul>
+<li>Elasticsearch</li>
+<li>Logstash</li>
+<li>Kibana</li>
+
+</ul></li>
+<li>Edit elasticsearch-2.1.1/config/elasticsearch.yml
+<ul>
+<li>cluster.name: ${HOSTNAME}</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline5">
+<h3 id="orgheadline5">Shell</h3>
+<ul>
+<li>Start a shell in &lt;elk-workshop&gt;/elasticsearch-2.1.1/bin
+<ul>
+<li>Run elasticsearch</li>
+<li>Open your browser at <a href="http://127.0.0.1:9200/">http://127.0.0.1:9200/</a></li>
+
+</ul></li>
+<li>Start a shell in &lt;elk-workshop&gt;/kibana-4.3.1-xxx/bin
+<ul>
+<li>Run kibana</li>
+<li>Open your browser at <a href="http://127.0.0.1:5601/">http://127.0.0.1:5601/</a></li>
+
+</ul></li>
+<li>Start a shell in &lt;elk-workshop&gt;/logstash/pipelines/setup
+<ul>
+<li>This will be used for logstash</li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+<section id="slide-orgheadline6">
+<h3 id="orgheadline6">Verify Logstash</h3>
+<ul>
+<li>Follow instructions at setup.txt</li>
+
+</ul>
+
+<p>
+Linux:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">../../../logstash-2.1.1/bin/logstash agent -f verify.conf --configtest
+</pre>
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline8">
+<h2 id="orgheadline8">Pipelines</h2>
+<ul>
+<li>LAPD Crime Reports</li>
+<li>HTTP Access Logs </li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline14">
+<h2 id="orgheadline14">LAPD Crime Reports</h2>
+<ul>
+<li>Navigate to <b>./logstash/pipelines/lapd</b></li>
+<li>Familiarize yourself with the data <b>./logstash/pipelines/lapd/data/lapd_small.csv</b></li>
+<li>We will focus on the following headers:</li>
+
+</ul>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">DATE OCC</td>
+<td class="org-left">Date of occurrence</td>
+</tr>
+
+<tr>
+<td class="org-left">TIME OCC</td>
+<td class="org-left">Time of occurrence</td>
+</tr>
+
+<tr>
+<td class="org-left">Crm Cd</td>
+<td class="org-left">Crime Code</td>
+</tr>
+
+<tr>
+<td class="org-left">Crm Cd Desc</td>
+<td class="org-left">Crime Code Description</td>
+</tr>
+
+<tr>
+<td class="org-left">Status</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Statue Desc</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">LOCATION</td>
+<td class="org-left">Street address</td>
+</tr>
+
+<tr>
+<td class="org-left">location 1</td>
+<td class="org-left">GPS coordinates</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-orgheadline9">
+<h3 id="orgheadline9">1st step: Read the data</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>What:</b></td>
+<td class="org-left">Learn how to use the file input plugin</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>How:</b></td>
+<td class="org-left">Open 1.txt and roll up your sleeves</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>When:</b></td>
+<td class="org-left">Now. You have 3 minutes!</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Ærg help!</b> <a href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-file.html">https://www.elastic.co/guide/en/logstash/current/plugins-inputs-file.html</a>
+</p>
+
+</section>
+<section id="slide-orgheadline10">
+<h3 id="orgheadline10">2nd step: Give structure to the data</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>What:</b></td>
+<td class="org-left">Familiarize yourself with the csv filter plugin</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>How:</b></td>
+<td class="org-left">Open 2.txt and read.</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>When:</b></td>
+<td class="org-left">Now. You have 5 minutes!</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Ærg help!</b> 
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/logstash/current/plugins-filters-csv.html">https://www.elastic.co/guide/en/logstash/current/plugins-filters-csv.html</a>
+</p>
+
+</section>
+<section id="slide-orgheadline11">
+<h3 id="orgheadline11">3rd step: Clean and format the data</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>What:</b></td>
+<td class="org-left">Familiarize yourself with mutate and date filter plugins</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>How:</b></td>
+<td class="org-left">Open 3.txt</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>When:</b></td>
+<td class="org-left">Now. You have 5 minutes!</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Ærg help!</b>  
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/logstash/current/plugins-filters-mutate.html">https://www.elastic.co/guide/en/logstash/current/plugins-filters-mutate.html</a>
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/logstash/current/plugins-filters-date.html">https://www.elastic.co/guide/en/logstash/current/plugins-filters-date.html</a> 
+</p>
+
+</section>
+<section id="slide-orgheadline12">
+<h3 id="orgheadline12">4th step: Export data to elasticsearch</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>What:</b></td>
+<td class="org-left">Familiarize yourself with elasticsearch output plugin</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>How:</b></td>
+<td class="org-left">Open 4.txt</td>
+</tr>
+
+<tr>
+<td class="org-left"><b>When:</b></td>
+<td class="org-left">Now. You have 5 minutes!</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<b>Ærg help!</b>  
+</p>
+
+<p>
+<a href="https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html">https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html</a>
+</p>
+
+</section>
+<section id="slide-orgheadline13">
+<h3 id="orgheadline13">Kibana visualization</h3>
+<ul>
+<li class="fragment appear">Settings tab
+<ul>
+<li>Get lapd index</li>
+
+</ul></li>
+<li class="fragment appear">Discover tab
+<ul>
+<li>Play with the time filter</li>
+<li>See the structure of the data</li>
+
+</ul></li>
+<li class="fragment appear">Visualize tab
+<ul>
+<li>Generate Pie charts</li>
+<li>Histogram bars</li>
+<li>Line charts for trends</li>
+<li>Metrics</li>
+<li>Filter aggregations</li>
+
+</ul></li>
+<li class="fragment appear">Dashboard tab
+<ul>
+<li>Construct a dashboard</li>
+<li>How to import / export the dashboard</li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline28">
+<h2 id="orgheadline28">HTTP Access Logs</h2>
+<p>
+Access logs generated by a script based on: <br  />
+<a href="https://gist.github.com/fetep/2037301">https://gist.github.com/fetep/2037301</a>
+</p>
+
+<p>
+Logs, exercises and configuration files can be found in <b>logstash/pipelines/httpd</b>
+</p>
+
+</section>
+<section id="slide-orgheadline20">
+<h3 id="orgheadline20">Grok</h3>
+<ul>
+<li>Regular expression text parser</li>
+<li>Pre-defined patterns
+<ul>
+<li>See: <a href="https://github.com/logstash-plugins/logstash-patterns-core/">https://github.com/logstash-plugins/logstash-patterns-core/</a></li>
+
+</ul></li>
+<li>Named matches become fields</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline16">
+<h4 id="orgheadline16">Getting started</h4>
+<ul>
+<li>Have a look at <b>data/access.mini.log</b></li>
+<li>Adapt the paths in <b>1.conf</b></li>
+<li>Run logstash and take note of the <b>test</b> field:</li>
+
+</ul>
+
+<p>
+Windows:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">..\..\..\logstash-2.1.1\bin\logstash agent -f 1.conf
+</pre>
+</div>
+
+<p>
+Linux:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-bash">../../../logstash-2.1.1/bin/logstash agent -f 1.conf
+</pre>
+</div>
+
+</section>
+<section id="slide-orgheadline15">
+<h5 id="orgheadline15">Match Option</h5>
+<ul>
+<li>Take note of the pattern used: "%{DATA:test} "</li>
+<li><b>DATA</b> is a pre-defined pattern equivalent to ".*?"</li>
+<li><b>:test</b> tells grok to bind the match to the field <b>test</b></li>
+<li>"%{DATA:test} " is equivalent to "(?&lt;test&gt;.*?) "</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline19">
+<h4 id="orgheadline19">Grok constructor</h4>
+<ul>
+<li>Regular expressions can be a hassle</li>
+<li>Lots of pre-defined patterns (around 120): <br  />
+<a href="https://github.com/logstash-plugins/logstash-patterns-core/">https://github.com/logstash-plugins/logstash-patterns-core/</a></li>
+<li><a href="http://grokconstructor.appspot.com/">http://grokconstructor.appspot.com/</a> <br  />
+to the rescue</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline17">
+<h5 id="orgheadline17">Incremental Construction</h5>
+<ul>
+<li>Select incremental construction</li>
+<li>Copy a few lines from access.mini.log into the text area and press Go</li>
+<li>Notice that the first pattern in the list matches everything: <br  />
+<b>COMBINEDAPACHELOG</b>
+<ul>
+<li>In the final results, we will use this pattern. <br  />
+For now, spend a few minutes getting familiar with the constructor.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline18">
+<h5 id="orgheadline18">Incremental Construction cont.</h5>
+<ul>
+<li>The Apache log format documentation: <br  />
+<a href="https://httpd.apache.org/docs/1.3/logs.html#common">https://httpd.apache.org/docs/1.3/logs.html#common</a></li>
+<li>Try to build a pattern that will capture the following fields:
+<ul>
+<li>Client IP/host name</li>
+<li>Date and time</li>
+<li>HTTP method</li>
+<li>Path part of requested URL</li>
+<li>HTTP status code</li>
+
+</ul></li>
+<li>Feel free to handle more parts</li>
+<li>Remember to add field names to the pattern</li>
+<li>Test your patterns</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline23">
+<h3 id="orgheadline23">Geo IP</h3>
+<ul>
+<li>Adds GPS coordinates based on IP addresses.</li>
+<li>A database mapping IP addresses to cities is included in logstash.</li>
+<li>Updated databases can be downloaded from <br  />
+<a href="http://dev.maxmind.com/geoip/legacy/geolite/">http://dev.maxmind.com/geoip/legacy/geolite/</a></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline21">
+<h4 id="orgheadline21">Basic Geo IP Configuration</h4>
+<ul>
+<li>Use <b>2.conf</b>, or add a geoip filter after your grok filter</li>
+<li>First set the source field to the client IP/host name field</li>
+<li>You can find the field by examining the COMMONAPACHELOG pattern <br  />
+or by running the configuration before adding the geoip filter</li>
+<li>Try running logstash with the configuration</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline22">
+<h4 id="orgheadline22">Fields</h4>
+<ul>
+<li>The geoip has added a lot of fields</li>
+<li>The most important one is <b>[geoip][location]</b> (coordinates)</li>
+<li>All these fields take up additional storage space</li>
+<li>Add a <b>fields</b> option to the geoip filter and specify a string array of fields you want to keep</li>
+<li>Re-run logstash with the updated configuration</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline24">
+<h3 id="orgheadline24">Timestamp</h3>
+<ul>
+<li>Use <b>3.conf</b>, for this and the next exercise</li>
+<li>Format specification can be found at: <br  />
+<a href="http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html">http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html</a></li>
+<li>Add a date filter similar to the one used in the LAPD exercise</li>
+<li>You don't need to specify the time zone, <br  />
+because the Apache date format contains it</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline25">
+<h3 id="orgheadline25">Checksum</h3>
+<ul>
+<li>Add a checksum with the checksum filter: <br  />
+<a href="https://www.elastic.co/guide/en/logstash/current/plugins-filters-checksum.html">https://www.elastic.co/guide/en/logstash/current/plugins-filters-checksum.html</a></li>
+<li>Set the algorithm to sha256 (default) or md5</li>
+<li>Set the keys to use the <b>message</b> field only</li>
+<li>You cannot specify the output field, so we move it with a mutate
+<ul>
+<li>Add a <b>[@metadata][computed_id]</b> field with the value of the <b>logstash_checksum</b> field</li>
+<li>Remove the <b>logstash_checksum</b> field</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline27">
+<h3 id="orgheadline27">Output to Elasticsearch</h3>
+<ul>
+<li>Add output to Elasticsearch</li>
+<li>Set the name of the index</li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline26">
+<h4 id="orgheadline26">Import Full Access Log</h4>
+<ul>
+<li>Unzip the <b>data/access.zip</b> archive</li>
+<li>Run logstash with the final configuration</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline32">
+<h2 id="orgheadline32">Wrap-up</h2>
+<div class="outline-text-2" id="text-orgheadline32">
+</div></section>
+<section id="slide-orgheadline29">
+<h3 id="orgheadline29">Useful links</h3>
+<ul>
+<li>Follow the blog <a href="https://www.elastic.co/blog">https://www.elastic.co/blog</a></li>
+<li>Some books
+<ul>
+<li><a href="https://www.packtpub.com/big-data-and-business-intelligence/elasticsearch-cookbook">https://www.packtpub.com/big-data-and-business-intelligence/elasticsearch-cookbook</a></li>
+<li><a href="https://www.packtpub.com/big-data-and-business-intelligence/learning-elk-stack">https://www.packtpub.com/big-data-and-business-intelligence/learning-elk-stack</a></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline30">
+<h3 id="orgheadline30">Unit/Integration Tests</h3>
+<ul>
+<li>Testing Logstash configurations can be difficult</li>
+<li>It is possible to write unit tests in Ruby:</li>
+<li><a href="http://stackoverflow.com/questions/18823917/how-to-implement-the-unit-or-integration-tests-for-logstash-configuration">http://stackoverflow.com/questions/18823917/how-to-implement-the-unit-or-integration-tests-for-logstash-configuration</a></li>
+
+</ul>
+</section>
+<section id="slide-orgheadline31">
+<h3 id="orgheadline31">Time-based Indices</h3>
+<ul>
+<li>You can add date fields to the index name
+<ul>
+<li>Slight increase in storage requirements</li>
+<li>Allows deleting partial data, which saves storage</li>
+<li>Increased performance?</li>
+
+</ul></li>
+<li>You may want indices to be:
+<ul>
+<li>Daily: "-%{+YYYY.MM.dd}"</li>
+<li>Weekly "-%{+xxxx.ww}"</li>
+<li>Monthly "-%{+YYYY.MM}"</li>
+
+</ul></li>
+<li>Defaults to daily: "logstash-%{+YYYY.MM.dd}"</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: true,
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: './reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>
