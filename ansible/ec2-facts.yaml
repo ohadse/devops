@@ -2,3 +2,4 @@
   ec2_facts:
 
 - debug: var=ansible_ec2_instance_id
+-name:
